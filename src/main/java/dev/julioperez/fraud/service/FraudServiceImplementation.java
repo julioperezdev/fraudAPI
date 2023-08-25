@@ -15,9 +15,11 @@ import java.util.List;
 @Slf4j
 public class FraudServiceImplementation implements FraudService{
     private final PaymentService paymentService;
+    private final CurrencyConverterService currencyConverterService;
 
-    public FraudServiceImplementation(PaymentService paymentService) {
+    public FraudServiceImplementation(PaymentService paymentService, CurrencyConverterService currencyConverterService) {
         this.paymentService = paymentService;
+        this.currencyConverterService = currencyConverterService;
     }
 
     @Override
@@ -52,12 +54,13 @@ public class FraudServiceImplementation implements FraudService{
         return Double.longBitsToDouble(payments
                 .stream()
                 .filter(particularPayment -> this.determinateDateByDaysBefore(particularPayment.getPaymentDate(), 7))
-                .map(particular -> convertLocalExchangeToDollar(particular.getLocalExchange(), particular.getTotalLocalExchange()))
+                .map(particular -> currencyConverterService.convertToUSD(particular.getLocalExchange(), particular.getTotalLocalExchange()))
                 .count());
 
     }
     private Double convertLocalExchangeToDollar(String localExchange, Double totalLocalExchange){
         //call to API
+
         return null;
     }
 }
